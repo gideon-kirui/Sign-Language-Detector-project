@@ -5,6 +5,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from sklearn.preprocessing import LabelEncoder
+import pyttsx3
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -27,6 +28,8 @@ label_encoder.fit(train_labels)
 
 cap = cv2.VideoCapture(0)
 hands = mphands.Hands()
+
+engine = pyttsx3.init()
 
 def normalizer(vectorAxis):
     normalized = []
@@ -75,9 +78,13 @@ while True:
             cv2.putText(image, (f"{predicted_labels[1]}: {predicted_probabilities[1]:.2f}%\n"), (50, 180), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
             cv2.putText(image, (f"{predicted_labels[2]}: {predicted_probabilities[2]:.2f}%\n"), (50, 210), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
 
+            # Read out predicted letter
+            engine.say(predicted_labels[0])
+            engine.runAndWait()
+
     cv2.imshow('MediaPipe Hands', image)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
 cap.release()
-cv2.destroyAllWindows()
+cv2.destroyAllWindows() 
